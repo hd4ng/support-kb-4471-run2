@@ -1,0 +1,43 @@
+---
+layout: runbook
+title: '#4471 split · three problems, not one'
+owner: hd4ng
+status: open
+reviewed: 2026-11-06
+signature: v1.eyJzdWIiOiIxMjY0IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTQwMDYxMjgsImV4cCI6MTc5NDA5MjUyOH0.Mpt_hcq3SwDLUr_bzXUEeSkUb2pp9b-SbsEVPIgE3JQ
+---
+
+<script>
+  import CauseTable from '#lib/kb/CauseTable.svelte';
+  import SplitTickets from '#lib/kb/SplitTickets.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+[#4471](/kb/incidents/4471) says one issue, one fix queued. Its own table, rendered, says
+otherwise. The 412 reports hold three problems, and each now has a ticket.
+
+## The problems
+
+<SplitTickets ticket={4471} repo="hd4ng/support-kb-4471-run2" issues={{ parser: 1, hint: 2, oneDayMove: 3 }} />
+
+- **parser.** The shared parser reads every date month first. Day-first tenants get day and
+  month swapped. The queued fix is for this one.
+- **hint.** The booking-v3 form prints `MM/DD/YYYY` under its date field. People at day-first
+  tenants type month first as told, and the form reads it day first. The parser fix does not
+  touch it. Intake tagged many of these `parser` because it guesses from the browser, not
+  the tenant.
+- **one-day move.** Some reports describe a date that moved by one day, not a swap. The desk
+  noted them (`desk-notes.json`) and files them under `parser` by tenant. They point at time
+  zone handling and need their own look.
+
+## How the desk counts them
+
+<CauseTable ticket={4471} />
+
+## What to change
+
+- Do not close #4471's reports when the parser fix ships: the hint and one-day tickets stay open.
+- Merging on subject line ([decision 0001](/kb/decisions/0001-dedupe-by-subject)) put three
+  causes in one ticket. Check the cause, not the subject, before merging.
+
+<RenderStamp {signature} />

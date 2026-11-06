@@ -1,0 +1,1 @@
+export{n as component}from"../chunks/BC-Fy4Er.js";
